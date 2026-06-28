@@ -6,10 +6,10 @@ import Button from '../components/ui/Button';
 const featuredProducts = [
   {
     id: '1',
-    name: 'Elegant Birthday Card',
+    name: 'Wedding Anniversary Card',
     price: 12.99,
     compareAtPrice: 15.99,
-    image: 'https://images.pexels.com/photos/131995/pexels-photo-131995.jpeg?auto=compress&cs=tinysrgb&w=800',
+    image: 'https://ibb.co/4Ryb5C57',
     rating: 4.8,
     reviews: 234,
     isCustomizable: true,
