@@ -5,14 +5,14 @@ import Button from '../components/ui/Button';
 
 const product = {
   id: '1',
-  name: 'Elegant Birthday Card',
+  name: 'Wedding Anniversary Card',
   price: 12.99,
   compareAtPrice: 15.99,
-  description: 'Celebrate special moments with our beautifully crafted birthday card. Features elegant typography, premium paper stock, and a modern design that\'s perfect for any age.',
+  description: 'Celebrate special moments with our beautifully crafted wedding anniversary card. Features elegant typography, premium paper stock, and a modern design that\'s perfect for any age.',
   images: [
-    'https://images.pexels.com/photos/131995/pexels-photo-131995.jpeg?auto=compress&cs=tinysrgb&w=800',
-    'https://images.pexels.com/photos/1148734/pexels-photo-1148734.jpeg?auto=compress&cs=tinysrgb&w=800',
-    'https://images.pexels.com/photos-251847/pexels-photo-251847.jpeg?auto=compress&cs=tinysrgb&w=800',
+    'https://ibb.co/5gcsTzVy',
+    'https://ibb.co/v64VK5gb',
+    'https://ibb.co/HfDZqQFf',
   ],
   rating: 4.8,
   reviews: 234,
