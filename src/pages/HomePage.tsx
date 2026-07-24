@@ -48,7 +48,7 @@ const featuredProducts = [
 
 const categories = [
   { name: 'Birthday', count: 234, image: 'https://images.pexels.com/photos/1148734/pexels-photo-1148734.jpeg?auto=compress&cs=tinysrgb&w=800' },
-  { name: 'Wedding', count: 156, image: 'https://images.pexels.com/photos/169190/pexels-photo-169190.jpeg?auto=compress&cs=tinysrgb&w=800' },
+  { name: 'Wedding', count: 156, image: 'https://unsplash.com/photos/train-traveling-through-snowy-mountains-towards-matterhorn-a6IdfyxlKro' },
   { name: 'Anniversary', count: 89, image: 'https://images.pexels.com/photos/1616403/pexels-photo-1616403.jpeg?auto=compress&cs=tinysrgb&w=800' },
   { name: 'Thank You', count: 178, image: 'https://images.pexels.com/photos/1000183/pexels-photo-1000183.jpeg?auto=compress&cs=tinysrgb&w=800' },
   { name: 'Congrats', count: 134, image: 'https://images.pexels.com/photos/1585973/pexels-photo-1585973.jpeg?auto=compress&cs=tinysrgb&w=800' },
