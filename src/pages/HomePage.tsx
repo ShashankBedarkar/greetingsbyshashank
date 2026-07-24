@@ -29,7 +29,7 @@ const featuredProducts = [
     name: 'Holiday Season Greetings',
     price: 9.99,
     compareAtPrice: 14.99,
-    image: 'https://images.pexels.com/photos/1661736/pexels-photo-1661736.jpeg?auto=compress&cs=tinysrgb&w=800',
+    image: 'https://unsplash.com/photos/train-traveling-through-snowy-mountains-towards-matterhorn-a6IdfyxlKro',
     rating: 4.5,
     reviews: 312,
     isCustomizable: true,
