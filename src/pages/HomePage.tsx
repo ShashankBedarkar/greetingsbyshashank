@@ -17,7 +17,7 @@ const featuredProducts = [
   },
   {
     id: '2',
-    name: 'Wedding Congratulations',
+    name: 'Wedding Congratulations!!!',
     price: 18.99,
     image: 'https://images.pexels.com/photos/1704088/pexels-photo-1704088.jpeg?auto=compress&cs=tinysrgb&w=800',
     rating: 5.0,
