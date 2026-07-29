@@ -19,7 +19,7 @@ const contactInfo = [
   {
     icon: MapPin,
     title: 'Visit Us',
-    content: '123 Greeting Lane, Card City, NY 10001',
+    content: 'Pune, Maharashtra',
     description: 'Our flagship store',
   },
   {
