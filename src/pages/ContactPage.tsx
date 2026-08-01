@@ -19,7 +19,7 @@ const contactInfo = [
   {
     icon: MapPin,
     title: 'Visit Us',
-    content: 'Pune, Maharashtra',
+    content: 'Pune, Maharashtra, India',
     description: 'Our flagship store',
   },
   {
