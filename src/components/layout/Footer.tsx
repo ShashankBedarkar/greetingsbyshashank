@@ -92,7 +92,7 @@ export default function Footer() {
               </a>
               <p className="flex items-center gap-3">
                 <MapPin className="w-5 h-5" />
-                123 Greeting Lane, Card City
+                Pune, Maharashtra, India
               </p>
             </div>
           </div>
