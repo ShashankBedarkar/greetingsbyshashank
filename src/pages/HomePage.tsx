@@ -9,7 +9,7 @@ const featuredProducts = [
     name: 'Wedding Anniversary Card',
     price: 12.99,
     compareAtPrice: 15.99,
-    image: '../public/images/homepage/wedding-anniversary-card/Wedding_Anniversary_Card_Front_Cover.png',
+    image: '/images/homepage/wedding-anniversary-card/Wedding_Anniversary_Card_Front_Cover.png',
     rating: 4.8,
     reviews: 234,
     isCustomizable: true,
