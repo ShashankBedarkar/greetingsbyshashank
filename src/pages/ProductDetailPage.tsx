@@ -12,7 +12,7 @@ const product = {
   images: [
     '/images/homepage/wedding-anniversary-card/Wedding_Anniversary_Card_Front_Cover.png',
     '/images/homepage/wedding-anniversary-card/Wedding Anniversary Card Inside Left.png',
-    'https://ibb.co/HfDZqQFf',
+    '/images/homepage/wedding-anniversary-card/Wedding Anniversary Card Inside Right.png',
   ],
   rating: 4.8,
   reviews: 234,
