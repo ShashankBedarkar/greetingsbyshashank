@@ -10,7 +10,7 @@ const product = {
   compareAtPrice: 15.99,
   description: 'Celebrate special moments with our beautifully crafted wedding anniversary card. Features elegant typography, premium paper stock, and a modern design that\'s perfect for any age.',
   images: [
-    'https://ibb.co/5gcsTzVy',
+    '/images/homepage/wedding-anniversary-card/Wedding_Anniversary_Card_Front_Cover.png',
     'https://ibb.co/v64VK5gb',
     'https://ibb.co/HfDZqQFf',
   ],
