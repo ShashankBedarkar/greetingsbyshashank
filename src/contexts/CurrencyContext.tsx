@@ -46,7 +46,7 @@ export function CurrencyProvider({ children }: { children: React.ReactNode }) {
         return stored;
       }
     }
-    return 'USD';
+    return 'INR';
   });
 
   const convertPrice = (priceUSD: number): number => {
