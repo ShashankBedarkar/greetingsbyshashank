@@ -2,49 +2,9 @@ import { Link } from 'react-router-dom';
 import { ArrowRight, Star, Truck, Gift, Shield, CreditCard, ChevronRight, Sparkles, Check } from 'lucide-react';
 import ProductCard from '../components/ui/ProductCard';
 import Button from '../components/ui/Button';
+import { products } from '../data/products';
 
-const featuredProducts = [
-  {
-    id: '1',
-    name: 'Wedding Anniversary Card',
-    price: 12.99,
-    compareAtPrice: 15.99,
-    image: '/images/homepage/wedding-anniversary-card/Wedding_Anniversary_Card_Front_Cover.png',
-    rating: 4.8,
-    reviews: 234,
-    isCustomizable: true,
-    isFeatured: true,
-  },
-  {
-    id: '2',
-    name: 'Wedding Congratulations',
-    price: 18.99,
-    image: 'https://images.pexels.com/photos/1704088/pexels-photo-1704088.jpeg?auto=compress&cs=tinysrgb&w=800',
-    rating: 5.0,
-    reviews: 189,
-    isCustomizable: true,
-  },
-  {
-    id: '3',
-    name: 'Holiday Season Greetings',
-    price: 9.99,
-    compareAtPrice: 14.99,
-    image: 'https://unsplash.com/photos/train-traveling-through-snowy-mountains-towards-matterhorn-a6IdfyxlKro',
-    rating: 4.5,
-    reviews: 312,
-    isCustomizable: true,
-  },
-  {
-    id: '4',
-    name: 'Thank You Floral Card',
-    price: 11.99,
-    image: 'https://images.pexels.com/photos/931007/pexels-photo-931007.jpeg?auto=compress&cs=tinysrgb&w=800',
-    rating: 4.9,
-    reviews: 156,
-    isCustomizable: true,
-    isFeatured: true,
-  },
-];
+const featuredProducts = products.filter((p) => p.isFeatured).concat(products.filter((p) => !p.isFeatured)).slice(0, 4);
 
 const categories = [
   { name: 'Birthday', count: 234, image: 'https://images.pexels.com/photos/1148734/pexels-photo-1148734.jpeg?auto=compress&cs=tinysrgb&w=800' },

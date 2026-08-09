@@ -2,62 +2,9 @@ import { useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { Minus, Plus, Heart, ShoppingCart, Star, Check, Truck, Gift, Shield, ChevronRight } from 'lucide-react';
 import Button from '../components/ui/Button';
-
-const product = {
-  id: '1',
-  name: 'Wedding Anniversary Card',
-  price: 12.99,
-  compareAtPrice: 15.99,
-  description: 'Celebrate special moments with our beautifully crafted wedding anniversary card. Features elegant typography, premium paper stock, and a modern design that\'s perfect for any age.',
-  images: [
-    '/images/homepage/wedding-anniversary-card/Wedding_Anniversary_Card_Front_Cover.png',
-    '/images/homepage/wedding-anniversary-card/Wedding Anniversary Card Inside Left.png',
-    '/images/homepage/wedding-anniversary-card/Wedding Anniversary Card Inside Right.png',
-  ],
-  rating: 4.8,
-  reviews: 234,
-  category: 'Birthday',
-  sku: 'BD-2024-001',
-  inStock: true,
-  customizable: true,
-  features: [
-    'Premium 350gsm card stock',
-    'Elegant foil accents',
-    'Matching envelope included',
-    'Blank interior for personal message',
-    'Size: 5" x 7"',
-  ],
-};
-
-const relatedProducts = [
-  {
-    id: '2',
-    name: 'Happy Birthday Greeting Card',
-    price: 18.99,
-    image: 'https://images.pexels.com/photos/1704088/pexels-photo-1704088.jpeg?auto=compress&cs=tinysrgb&w=800',
-    rating: 5.0,
-    reviews: 189,
-    isCustomizable: true,
-  },
-  {
-    id: '3',
-    name: 'Holiday Season Greetings',
-    price: 9.99,
-    image: 'https://images.pexels.com/photos/1661736/pexels-photo-1661736.jpeg?auto=compress&cs=tinysrgb&w=800',
-    rating: 4.5,
-    reviews: 312,
-    isCustomizable: true,
-  },
-  {
-    id: '4',
-    name: 'Thank You Floral Card',
-    price: 11.99,
-    image: 'https://images.pexels.com/photos/931007/pexels-photo-931007.jpeg?auto=compress&cs=tinysrgb&w=800',
-    rating: 4.9,
-    reviews: 156,
-    isCustomizable: true,
-  },
-];
+import ProductCard from '../components/ui/ProductCard';
+import { getProductById, getRelatedProducts } from '../data/products';
+import { useCurrency } from '../contexts/CurrencyContext';
 
 const reviews = [
   {
@@ -80,13 +27,33 @@ const reviews = [
 
 export default function ProductDetailPage() {
   const { id } = useParams();
+  const product = getProductById(id);
+  const { convertPrice, getSymbol } = useCurrency();
   const [selectedImage, setSelectedImage] = useState(0);
   const [quantity, setQuantity] = useState(1);
   const [isWishlisted, setIsWishlisted] = useState(false);
 
+  if (!product) {
+    return (
+      <div className="min-h-screen bg-secondary-50 dark:bg-secondary-900 pt-24 flex items-center justify-center">
+        <div className="text-center">
+          <h1 className="heading-2 mb-4">Card Not Found</h1>
+          <p className="text-body mb-8">The card you're looking for doesn't exist or has been removed.</p>
+          <Link to="/shop">
+            <Button size="lg">Browse All Cards</Button>
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
+  const images = product.images ?? [product.image];
   const discount = product.compareAtPrice
     ? Math.round(((product.compareAtPrice - product.price) / product.compareAtPrice) * 100)
     : 0;
+  const convertedPrice = convertPrice(product.price);
+  const convertedComparePrice = product.compareAtPrice ? convertPrice(product.compareAtPrice) : undefined;
+  const relatedProducts = getRelatedProducts(id, 4);
 
   return (
     <div className="min-h-screen bg-secondary-50 dark:bg-secondary-900 pt-24">
@@ -105,26 +72,28 @@ export default function ProductDetailPage() {
           <div className="space-y-4">
             <div className="aspect-greeting-card rounded-2xl overflow-hidden bg-white dark:bg-secondary-800 shadow-lg">
               <img
-                src={product.images[selectedImage]}
+                src={images[selectedImage]}
                 alt={product.name}
                 className="w-full h-full object-cover"
               />
             </div>
-            <div className="flex gap-4">
-              {product.images.map((image, idx) => (
-                <button
-                  key={idx}
-                  onClick={() => setSelectedImage(idx)}
-                  className={`w-24 h-28 rounded-lg overflow-hidden border-2 transition-colors ${
-                    selectedImage === idx
-                      ? 'border-primary-500'
-                      : 'border-transparent hover:border-primary-300'
-                  }`}
-                >
-                  <img src={image} alt="" className="w-full h-full object-cover" />
-                </button>
-              ))}
-            </div>
+            {images.length > 1 && (
+              <div className="flex gap-4">
+                {images.map((image, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => setSelectedImage(idx)}
+                    className={`w-24 h-28 rounded-lg overflow-hidden border-2 transition-colors ${
+                      selectedImage === idx
+                        ? 'border-primary-500'
+                        : 'border-transparent hover:border-primary-300'
+                    }`}
+                  >
+                    <img src={image} alt="" className="w-full h-full object-cover" />
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
 
           {/* Product Info */}
@@ -134,30 +103,32 @@ export default function ProductDetailPage() {
                 <span className="badge badge-error mb-4">Save {discount}%</span>
               )}
               <h1 className="heading-2 mb-4">{product.name}</h1>
-              <div className="flex items-center gap-4 mb-4">
-                <div className="flex items-center gap-1">
-                  {[...Array(5)].map((_, i) => (
-                    <Star
-                      key={i}
-                      className={`w-5 h-5 ${
-                        i < Math.floor(product.rating)
-                          ? 'text-warning-400 fill-warning-400'
-                          : 'text-secondary-300 dark:text-secondary-600'
-                      }`}
-                    />
-                  ))}
+              {product.rating !== undefined && product.reviews !== undefined && (
+                <div className="flex items-center gap-4 mb-4">
+                  <div className="flex items-center gap-1">
+                    {[...Array(5)].map((_, i) => (
+                      <Star
+                        key={i}
+                        className={`w-5 h-5 ${
+                          i < Math.floor(product.rating!)
+                            ? 'text-warning-400 fill-warning-400'
+                            : 'text-secondary-300 dark:text-secondary-600'
+                        }`}
+                      />
+                    ))}
+                  </div>
+                  <span className="text-secondary-600 dark:text-secondary-400">
+                    {product.rating} ({product.reviews} reviews)
+                  </span>
                 </div>
-                <span className="text-secondary-600 dark:text-secondary-400">
-                  {product.rating} ({product.reviews} reviews)
-                </span>
-              </div>
+              )}
               <div className="flex items-center gap-4 mb-6">
                 <span className="text-3xl font-bold text-primary-600 dark:text-primary-400">
-                  ${product.price.toFixed(2)}
+                  {getSymbol()}{convertedPrice.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                 </span>
-                {product.compareAtPrice && (
+                {convertedComparePrice && (
                   <span className="text-xl text-secondary-400 line-through">
-                    ${product.compareAtPrice.toFixed(2)}
+                    {getSymbol()}{convertedComparePrice.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                   </span>
                 )}
               </div>
@@ -208,7 +179,7 @@ export default function ProductDetailPage() {
               </button>
             </div>
 
-            {product.customizable && (
+            {product.isCustomizable && (
               <Link to="/custom-studio" className="block mb-8">
                 <div className="p-6 rounded-xl bg-gradient-to-r from-primary-50 to-accent-50 dark:from-primary-950/20 dark:to-accent-950/20 border border-primary-200 dark:border-primary-800">
                   <p className="font-semibold text-secondary-900 dark:text-secondary-100 mb-2">
@@ -238,7 +209,7 @@ export default function ProductDetailPage() {
                 <Truck className="w-5 h-5 text-success-600 dark:text-success-400" />
                 <div>
                   <p className="text-sm font-medium text-secondary-900 dark:text-secondary-100">Ships in 2-3 days</p>
-                  <p className="text-xs text-secondary-500">Free shipping over $50</p>
+                  <p className="text-xs text-secondary-500">Free shipping over {getSymbol()}{convertPrice(50).toLocaleString('en-IN', { maximumFractionDigits: 0 })}</p>
                 </div>
               </div>
               <div className="flex items-center gap-2">
@@ -270,7 +241,7 @@ export default function ProductDetailPage() {
                 <Truck className="w-5 h-5 text-secondary-600 dark:text-secondary-400" />
                 <div className="text-sm">
                   <p className="font-medium text-secondary-900 dark:text-secondary-100">Free Shipping</p>
-                  <p className="text-secondary-500 dark:text-secondary-400">Orders over $50</p>
+                  <p className="text-secondary-500 dark:text-secondary-400">Orders over {getSymbol()}{convertPrice(50).toLocaleString('en-IN', { maximumFractionDigits: 0 })}</p>
                 </div>
               </div>
               <div className="flex items-center gap-3">
@@ -337,7 +308,7 @@ export default function ProductDetailPage() {
                       <Star
                         key={i}
                         className={`w-5 h-5 ${
-                          i < Math.floor(product.rating)
+                          i < Math.floor(product.rating ?? 0)
                             ? 'text-warning-400 fill-warning-400'
                             : 'text-secondary-300'
                         }`}
@@ -356,26 +327,19 @@ export default function ProductDetailPage() {
         <div>
           <h2 className="heading-3 mb-8">You May Also Like</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {relatedProducts.map((product) => (
-              <div key={product.id} className="card card-hover">
-                <div className="aspect-greeting-card overflow-hidden">
-                  <img
-                    src={product.image}
-                    alt={product.name}
-                    className="w-full h-full object-cover hover:scale-110 transition-transform duration-500"
-                  />
-                </div>
-                <div className="p-5">
-                  <h3 className="font-semibold mb-2 text-secondary-900 dark:text-secondary-100">{product.name}</h3>
-                  <div className="flex items-center justify-between">
-                    <span className="font-bold text-primary-600 dark:text-primary-400">${product.price.toFixed(2)}</span>
-                    <div className="flex items-center gap-1">
-                      <Star className="w-4 h-4 text-warning-400 fill-warning-400" />
-                      <span className="text-sm text-secondary-600 dark:text-secondary-400">{product.rating}</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
+            {relatedProducts.map((related) => (
+              <ProductCard
+                key={related.id}
+                id={related.id}
+                name={related.name}
+                price={related.price}
+                compareAtPrice={related.compareAtPrice}
+                image={related.image}
+                rating={related.rating}
+                reviews={related.reviews}
+                isCustomizable={related.isCustomizable}
+                isFeatured={related.isFeatured}
+              />
             ))}
           </div>
         </div>
