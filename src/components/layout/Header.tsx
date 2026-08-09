@@ -88,6 +88,17 @@ export default function Header() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  useEffect(() => {
+    if (isMobileMenuOpen || isSearchOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [isMobileMenuOpen, isSearchOpen]);
+
   return (
     <>
       <header
@@ -100,17 +111,27 @@ export default function Header() {
         `}
       >
         <nav className="container-custom">
-          <div className="flex items-center justify-between h-20">
-            <Link to="/" className="flex items-center gap-2 group">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary-500 to-accent-500 flex items-center justify-center shadow-lg group-hover:shadow-xl transition-shadow">
-                <Gift className="w-6 h-6 text-white" />
+          <div className="flex items-center justify-between h-16 sm:h-20 min-w-0">
+            {/* Mobile menu button - left side on small screens */}
+            <button
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className="btn-icon lg:hidden flex-shrink-0"
+              aria-label="Toggle menu"
+            >
+              {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            </button>
+
+            <Link to="/" className="flex items-center gap-2 group min-w-0 flex-shrink-0">
+              <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-br from-primary-500 to-accent-500 flex items-center justify-center shadow-lg group-hover:shadow-xl transition-shadow flex-shrink-0">
+                <Gift className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
               </div>
-              <span className="font-display text-2xl font-bold">
+              <span className="font-display text-lg sm:text-2xl font-bold whitespace-nowrap">
                 <span className="text-primary-600 dark:text-primary-400">Greetings</span>
-                <span className="text-accent-600 dark:text-accent-400"> By Shashank</span>
+                <span className="text-accent-600 dark:text-accent-400 hidden xs:inline"> By Shashank</span>
               </span>
             </Link>
 
+            {/* Desktop nav */}
             <div className="hidden lg:flex items-center gap-1">
               {mainNavItems.map((item) => (
                 <div
@@ -175,7 +196,8 @@ export default function Header() {
               ))}
             </div>
 
-            <div className="flex items-center gap-2">
+            {/* Right side icons */}
+            <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0">
               <button
                 onClick={() => setIsSearchOpen(true)}
                 className="btn-icon"
@@ -184,9 +206,10 @@ export default function Header() {
                 <Search className="w-5 h-5" />
               </button>
 
+              {/* Theme toggle - hidden on very small screens, moved to mobile menu */}
               <button
                 onClick={toggleTheme}
-                className="btn-icon"
+                className="btn-icon hidden sm:flex"
                 aria-label="Toggle theme"
               >
                 {theme === 'light' ? (
@@ -196,14 +219,15 @@ export default function Header() {
                 )}
               </button>
 
-              <div className="relative">
+              {/* Currency - hidden on small screens, moved to mobile menu */}
+              <div className="relative hidden sm:block">
                 <button
                   onClick={() => setIsCurrencyMenuOpen(!isCurrencyMenuOpen)}
                   className="btn-icon flex items-center gap-1"
                   aria-label="Change currency"
                 >
                   <Globe className="w-5 h-5" />
-                  <span className="text-sm font-semibold hidden sm:inline">{currency}</span>
+                  <span className="text-sm font-semibold">{currency}</span>
                 </button>
                 {isCurrencyMenuOpen && (
                   <>
@@ -236,7 +260,8 @@ export default function Header() {
                 )}
               </div>
 
-              <Link to="/wishlist" className="btn-icon relative">
+              {/* Wishlist - hidden on very small screens */}
+              <Link to="/wishlist" className="btn-icon relative hidden sm:flex">
                 <Heart className="w-5 h-5" />
                 {wishlistCount > 0 && (
                   <span className="absolute -top-1 -right-1 w-5 h-5 bg-error-500 text-white text-xs rounded-full flex items-center justify-center font-medium">
@@ -245,6 +270,7 @@ export default function Header() {
                 )}
               </Link>
 
+              {/* Cart - always visible */}
               <Link to="/cart" className="btn-icon relative">
                 <ShoppingCart className="w-5 h-5" />
                 {cartCount > 0 && (
@@ -254,8 +280,9 @@ export default function Header() {
                 )}
               </Link>
 
+              {/* Sign in / account - hidden on small screens, moved to mobile menu */}
               {user ? (
-                <div className="relative group">
+                <div className="relative group hidden sm:block">
                   <button className="btn-icon">
                     <User className="w-5 h-5" />
                   </button>
@@ -287,24 +314,17 @@ export default function Header() {
                   </div>
                 </div>
               ) : (
-                <Link to="/auth">
+                <Link to="/auth" className="hidden sm:block">
                   <Button size="sm">Sign In</Button>
                 </Link>
               )}
-
-              <button
-                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                className="btn-icon lg:hidden"
-                aria-label="Toggle menu"
-              >
-                {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-              </button>
             </div>
           </div>
         </nav>
 
+        {/* Mobile menu */}
         {isMobileMenuOpen && (
-          <div className="lg:hidden glass border-t border-secondary-200 dark:border-secondary-800 animate-slide-down">
+          <div className="lg:hidden fixed inset-x-0 top-16 sm:top-20 bottom-0 glass border-t border-secondary-200 dark:border-secondary-800 animate-slide-down overflow-y-auto">
             <div className="container-custom py-4 space-y-2">
               {mainNavItems.map((item) => (
                 <Link
@@ -316,21 +336,102 @@ export default function Header() {
                   {item.name}
                 </Link>
               ))}
-              {user && (
-                <div className="border-t border-secondary-200 dark:border-secondary-800 pt-2 mt-2">
-                  {accountItems.map((item) => (
-                    <Link
-                      key={item.name}
-                      to={item.href}
-                      onClick={() => setIsMobileMenuOpen(false)}
-                      className="flex items-center gap-3 px-4 py-3 rounded-lg text-secondary-700 dark:text-secondary-300 hover:bg-secondary-100 dark:hover:bg-secondary-800 transition-colors"
-                    >
-                      <item.icon className="w-5 h-5" />
-                      {item.name}
-                    </Link>
-                  ))}
+
+              {/* Mobile-only items */}
+              <div className="border-t border-secondary-200 dark:border-secondary-800 pt-2 mt-2 space-y-2">
+                <button
+                  onClick={toggleTheme}
+                  className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-secondary-700 dark:text-secondary-300 hover:bg-secondary-100 dark:hover:bg-secondary-800 transition-colors"
+                >
+                  {theme === 'light' ? (
+                    <>
+                      <Moon className="w-5 h-5" />
+                      <span>Dark Mode</span>
+                    </>
+                  ) : (
+                    <>
+                      <Sun className="w-5 h-5" />
+                      <span>Light Mode</span>
+                    </>
+                  )}
+                </button>
+
+                {/* Currency selector in mobile menu */}
+                <div className="px-4 py-3">
+                  <div className="flex items-center gap-3 mb-3 text-secondary-700 dark:text-secondary-300">
+                    <Globe className="w-5 h-5" />
+                    <span className="font-medium">Currency: {currency} ({getSymbol(currency)})</span>
+                  </div>
+                  <div className="grid grid-cols-4 gap-2">
+                    {currencies.map((curr) => (
+                      <button
+                        key={curr}
+                        onClick={() => setCurrency(curr)}
+                        className={`px-2 py-2 rounded-lg text-sm font-medium transition-colors ${
+                          currency === curr
+                            ? 'bg-primary-500 text-white'
+                            : 'text-secondary-700 dark:text-secondary-300 bg-secondary-100 dark:bg-secondary-800'
+                        }`}
+                      >
+                        {curr}
+                      </button>
+                    ))}
+                  </div>
                 </div>
-              )}
+
+                {/* Wishlist link in mobile menu */}
+                <Link
+                  to="/wishlist"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="flex items-center gap-3 px-4 py-3 rounded-lg text-secondary-700 dark:text-secondary-300 hover:bg-secondary-100 dark:hover:bg-secondary-800 transition-colors"
+                >
+                  <Heart className="w-5 h-5" />
+                  <span>Wishlist</span>
+                  {wishlistCount > 0 && (
+                    <span className="ml-auto bg-error-500 text-white text-xs rounded-full px-2 py-0.5">
+                      {wishlistCount}
+                    </span>
+                  )}
+                </Link>
+
+                {/* Sign in / account in mobile menu */}
+                {user ? (
+                  <>
+                    <div className="px-4 py-2 text-sm text-secondary-500 dark:text-secondary-400 border-t border-secondary-200 dark:border-secondary-800">
+                      Signed in as {user.email}
+                    </div>
+                    {accountItems.map((item) => (
+                      <Link
+                        key={item.name}
+                        to={item.href}
+                        onClick={() => setIsMobileMenuOpen(false)}
+                        className="flex items-center gap-3 px-4 py-3 rounded-lg text-secondary-700 dark:text-secondary-300 hover:bg-secondary-100 dark:hover:bg-secondary-800 transition-colors"
+                      >
+                        <item.icon className="w-5 h-5" />
+                        {item.name}
+                      </Link>
+                    ))}
+                    <button
+                      onClick={() => {
+                        signOut();
+                        setIsMobileMenuOpen(false);
+                      }}
+                      className="w-full flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-error-50 dark:hover:bg-error-950/30 text-error-600 dark:text-error-400 transition-colors"
+                    >
+                      <X className="w-5 h-5" />
+                      <span>Sign Out</span>
+                    </button>
+                  </>
+                ) : (
+                  <Link
+                    to="/auth"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="block px-4 py-3"
+                  >
+                    <Button size="md" className="w-full">Sign In</Button>
+                  </Link>
+                )}
+              </div>
             </div>
           </div>
         )}
@@ -341,22 +442,22 @@ export default function Header() {
           <div className="container-custom pt-20">
             <div className="glass rounded-2xl shadow-2xl p-6 animate-slide-down" onClick={(e) => e.stopPropagation()}>
               <div className="flex items-center gap-4">
-                <Search className="w-6 h-6 text-secondary-400" />
+                <Search className="w-6 h-6 text-secondary-400 flex-shrink-0" />
                 <input
                   type="text"
                   placeholder="Search for cards, templates, or occasions..."
-                  className="flex-1 bg-transparent text-xl text-secondary-900 dark:text-secondary-100 placeholder-secondary-400 focus:outline-none"
+                  className="flex-1 min-w-0 bg-transparent text-lg sm:text-xl text-secondary-900 dark:text-secondary-100 placeholder-secondary-400 focus:outline-none"
                   autoFocus
                 />
                 <button
                   onClick={() => setIsSearchOpen(false)}
-                  className="btn-icon"
+                  className="btn-icon flex-shrink-0"
                   aria-label="Close search"
                 >
                   <X className="w-6 h-6" />
                 </button>
               </div>
-              <div className="mt-6 grid grid-cols-2 md:grid-cols-4 gap-4">
+              <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
                 <p className="text-sm text-secondary-500 dark:text-secondary-400">Popular searches:</p>
                 {['Birthday Cards', 'Thank You Cards', 'Wedding Invitations', 'Holiday Cards'].map((term) => (
                   <button
