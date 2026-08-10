@@ -324,18 +324,59 @@ export default function Header() {
 
         {/* Mobile menu */}
         {isMobileMenuOpen && (
-          <div className="lg:hidden fixed inset-x-0 top-16 sm:top-20 bottom-0 glass border-t border-secondary-200 dark:border-secondary-800 animate-slide-down overflow-y-auto">
-            <div className="container-custom py-4 space-y-2">
-              {mainNavItems.map((item) => (
+          <div className="lg:hidden fixed inset-x-0 top-16 sm:top-20 bottom-0 bg-white dark:bg-secondary-900 border-t border-secondary-200 dark:border-secondary-800 animate-slide-down overflow-y-auto z-[60]">
+            <div className="container-custom py-4 space-y-2 min-h-full pb-8">
+              {/* Sign in / account - at top so it's always visible */}
+              {user ? (
+                <>
+                  <div className="px-4 py-2 text-sm text-secondary-500 dark:text-secondary-400 border-b border-secondary-200 dark:border-secondary-800 pb-2 mb-2">
+                    Signed in as {user.email}
+                  </div>
+                  {accountItems.map((item) => (
+                    <Link
+                      key={item.name}
+                      to={item.href}
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className="flex items-center gap-3 px-4 py-3 rounded-lg text-secondary-700 dark:text-secondary-300 hover:bg-secondary-100 dark:hover:bg-secondary-800 transition-colors"
+                    >
+                      <item.icon className="w-5 h-5" />
+                      {item.name}
+                    </Link>
+                  ))}
+                  <button
+                    onClick={() => {
+                      signOut();
+                      setIsMobileMenuOpen(false);
+                    }}
+                    className="w-full flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-error-50 dark:hover:bg-error-950/30 text-error-600 dark:text-error-400 transition-colors"
+                  >
+                    <X className="w-5 h-5" />
+                    <span>Sign Out</span>
+                  </button>
+                </>
+              ) : (
                 <Link
-                  key={item.name}
-                  to={item.href}
+                  to="/auth"
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className="block px-4 py-3 rounded-lg text-secondary-700 dark:text-secondary-300 hover:bg-secondary-100 dark:hover:bg-secondary-800 transition-colors font-medium"
+                  className="block px-4 py-3"
                 >
-                  {item.name}
+                  <Button size="md" className="w-full">Sign In</Button>
                 </Link>
-              ))}
+              )}
+
+              {/* Nav links */}
+              <div className="border-t border-secondary-200 dark:border-secondary-800 pt-2 mt-2 space-y-2">
+                {mainNavItems.map((item) => (
+                  <Link
+                    key={item.name}
+                    to={item.href}
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="block px-4 py-3 rounded-lg text-secondary-700 dark:text-secondary-300 hover:bg-secondary-100 dark:hover:bg-secondary-800 transition-colors font-medium"
+                  >
+                    {item.name}
+                  </Link>
+                ))}
+              </div>
 
               {/* Mobile-only items */}
               <div className="border-t border-secondary-200 dark:border-secondary-800 pt-2 mt-2 space-y-2">
@@ -393,44 +434,6 @@ export default function Header() {
                     </span>
                   )}
                 </Link>
-
-                {/* Sign in / account in mobile menu */}
-                {user ? (
-                  <>
-                    <div className="px-4 py-2 text-sm text-secondary-500 dark:text-secondary-400 border-t border-secondary-200 dark:border-secondary-800">
-                      Signed in as {user.email}
-                    </div>
-                    {accountItems.map((item) => (
-                      <Link
-                        key={item.name}
-                        to={item.href}
-                        onClick={() => setIsMobileMenuOpen(false)}
-                        className="flex items-center gap-3 px-4 py-3 rounded-lg text-secondary-700 dark:text-secondary-300 hover:bg-secondary-100 dark:hover:bg-secondary-800 transition-colors"
-                      >
-                        <item.icon className="w-5 h-5" />
-                        {item.name}
-                      </Link>
-                    ))}
-                    <button
-                      onClick={() => {
-                        signOut();
-                        setIsMobileMenuOpen(false);
-                      }}
-                      className="w-full flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-error-50 dark:hover:bg-error-950/30 text-error-600 dark:text-error-400 transition-colors"
-                    >
-                      <X className="w-5 h-5" />
-                      <span>Sign Out</span>
-                    </button>
-                  </>
-                ) : (
-                  <Link
-                    to="/auth"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                    className="block px-4 py-3"
-                  >
-                    <Button size="md" className="w-full">Sign In</Button>
-                  </Link>
-                )}
               </div>
             </div>
           </div>
