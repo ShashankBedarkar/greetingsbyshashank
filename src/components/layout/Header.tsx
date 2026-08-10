@@ -114,9 +114,11 @@ export default function Header() {
           <div className="flex items-center justify-between h-16 sm:h-20 min-w-0">
             {/* Mobile menu button - left side on small screens */}
             <button
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="btn-icon lg:hidden flex-shrink-0"
-              aria-label="Toggle menu"
+              type="button"
+              onClick={() => setIsMobileMenuOpen((isOpen) => !isOpen)}
+              className="btn-icon lg:hidden flex-shrink-0 relative z-[70]"
+              aria-label={isMobileMenuOpen ? 'Close menu' : 'Open menu'}
+              aria-expanded={isMobileMenuOpen}
             >
               {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
@@ -324,7 +326,7 @@ export default function Header() {
 
         {/* Mobile menu */}
         {isMobileMenuOpen && (
-          <div className="lg:hidden fixed inset-x-0 top-16 sm:top-20 bottom-0 bg-white dark:bg-secondary-900 border-t border-secondary-200 dark:border-secondary-800 animate-slide-down overflow-y-auto z-[60]">
+          <div className="lg:hidden absolute left-0 right-0 top-full max-h-[calc(100dvh-4rem)] sm:max-h-[calc(100dvh-5rem)] bg-white dark:bg-secondary-900 border-t border-secondary-200 dark:border-secondary-800 shadow-2xl animate-slide-down overflow-y-auto overscroll-contain z-[60]">
             <div className="container-custom py-4 space-y-2 min-h-full pb-8">
               {/* Sign in / account - at top so it's always visible */}
               {user ? (

@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
 import { ArrowRight, Star, Truck, Gift, Shield, CreditCard, ChevronRight, Sparkles, Check } from 'lucide-react';
 import ProductCard from '../components/ui/ProductCard';
 import Button from '../components/ui/Button';
@@ -50,6 +51,8 @@ const trustBadges = [
 ];
 
 export default function HomePage() {
+  const { user } = useAuth();
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-white to-secondary-50 dark:from-secondary-950 dark:to-secondary-900">
       {/* Hero Section */}
@@ -78,7 +81,7 @@ export default function HomePage() {
                 Add your personal touch with our easy-to-use design studio.
               </p>
               <div className="flex flex-wrap gap-4">
-                <Link to="/shop">
+                <Link to={user ? '/shop' : '/auth'}>
                   <Button size="lg" rightIcon={<ArrowRight className="w-5 h-5" />}>
                     Shop Now
                   </Button>
