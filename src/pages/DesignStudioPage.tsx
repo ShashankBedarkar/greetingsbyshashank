@@ -1,10 +1,8 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import {
   Type,
   Image,
-  Shapes,
-  Palette,
   Undo2,
   Redo2,
   ZoomIn,
@@ -20,10 +18,8 @@ import {
   AlignRight,
   Bold,
   Italic,
-  Move,
   Trash2,
   QrCode,
-  Eye,
   Grid3X3,
 } from 'lucide-react';
 import Button from '../components/ui/Button';
@@ -73,12 +69,6 @@ const stickers = [
   { id: '8', emoji: '🌸', name: 'Flower' },
 ];
 
-const shapes = [
-  { id: '1', name: 'Rectangle', style: 'rounded-lg' },
-  { id: '2', name: 'Circle', style: 'rounded-full' },
-  { id: '3', name: 'Square', style: 'rounded-md' },
-];
-
 const colors = [
   '#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FFEAA7',
   '#DDA0DD', '#98D8C8', '#F7DC6F', '#BB8FCE', '#85C1E9',
@@ -120,6 +110,25 @@ export default function DesignStudioPage() {
   const [aiPrompt, setAiPrompt] = useState('');
   const [generatedMessages, setGeneratedMessages] = useState<string[]>([]);
   const canvasRef = useRef<HTMLDivElement>(null);
+  const dragRef = useRef<{
+    id: string;
+    pointerId: number;
+    startX: number;
+    startY: number;
+    originX: number;
+    originY: number;
+    currentX: number;
+    currentY: number;
+  } | null>(null);
+  const resizeRef = useRef<{
+    id: string;
+    pointerId: number;
+    startX: number;
+    startY: number;
+    originW: number;
+    originH: number;
+    handle: string;
+  } | null>(null);
 
   const selectedElementData = elements.find(el => el.id === selectedElement);
 
@@ -186,6 +195,119 @@ export default function DesignStudioPage() {
     if (e.target === canvasRef.current) {
       setSelectedElement(null);
     }
+  };
+
+  const handleElementPointerDown = (e: React.PointerEvent<HTMLDivElement>, element: DesignElement) => {
+    if (e.button !== 0) return;
+
+    e.stopPropagation();
+    setSelectedElement(element.id);
+    dragRef.current = {
+      id: element.id,
+      pointerId: e.pointerId,
+      startX: e.clientX,
+      startY: e.clientY,
+      originX: element.x,
+      originY: element.y,
+      currentX: element.x,
+      currentY: element.y,
+    };
+    e.currentTarget.setPointerCapture(e.pointerId);
+  };
+
+  const handleElementPointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
+    const drag = dragRef.current;
+    if (!drag || drag.pointerId !== e.pointerId) return;
+
+    const scale = zoom / 100;
+    const nextX = Math.max(0, drag.originX + (e.clientX - drag.startX) / scale);
+    const nextY = Math.max(0, drag.originY + (e.clientY - drag.startY) / scale);
+    drag.currentX = nextX;
+    drag.currentY = nextY;
+    setElements(current => current.map(element =>
+      element.id === drag.id ? { ...element, x: nextX, y: nextY } : element
+    ));
+  };
+
+  const handleElementPointerUp = (e: React.PointerEvent<HTMLDivElement>) => {
+    const drag = dragRef.current;
+    if (!drag || drag.pointerId !== e.pointerId) return;
+
+    const nextElements = elements.map(element =>
+      element.id === drag.id
+        ? { ...element, x: drag.currentX, y: drag.currentY }
+        : element
+    );
+    setElements(nextElements);
+    saveToHistory(nextElements);
+    dragRef.current = null;
+    e.currentTarget.releasePointerCapture(e.pointerId);
+  };
+
+  const handleResizePointerDown = (e: React.PointerEvent<HTMLDivElement>, element: DesignElement, handle: string) => {
+    if (e.button !== 0) return;
+
+    e.preventDefault();
+    e.stopPropagation();
+    resizeRef.current = {
+      id: element.id,
+      pointerId: e.pointerId,
+      startX: e.clientX,
+      startY: e.clientY,
+      originW: element.width,
+      originH: element.height,
+      handle,
+    };
+    e.currentTarget.setPointerCapture(e.pointerId);
+  };
+
+  const handleResizePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
+    const resize = resizeRef.current;
+    if (!resize || resize.pointerId !== e.pointerId) return;
+
+    const scale = zoom / 100;
+    const dx = (e.clientX - resize.startX) / scale;
+    const dy = (e.clientY - resize.startY) / scale;
+
+    setElements(current => current.map(el => {
+      if (el.id !== resize.id) return el;
+      let w = resize.originW;
+      let h = resize.originH;
+      if (resize.handle.includes('e')) w = Math.max(30, resize.originW + dx);
+      if (resize.handle.includes('s')) h = Math.max(20, resize.originH + dy);
+      if (resize.handle.includes('w')) w = Math.max(30, resize.originW - dx);
+      if (resize.handle.includes('n')) h = Math.max(20, resize.originH - dy);
+      return { ...el, width: w, height: h };
+    }));
+  };
+
+  const handleResizePointerUp = (e: React.PointerEvent<HTMLDivElement>) => {
+    const resize = resizeRef.current;
+    if (!resize || resize.pointerId !== e.pointerId) return;
+
+    const el = elements.find(element => element.id === resize.id);
+    if (el) {
+      saveToHistory(elements);
+    }
+    resizeRef.current = null;
+    e.currentTarget.releasePointerCapture(e.pointerId);
+  };
+
+  const addImageFromFile = (file: File) => {
+    if (!file.type.startsWith('image/')) return;
+
+    addElement('image', {
+      content: URL.createObjectURL(file),
+      width: 240,
+      height: 180,
+      backgroundColor: undefined,
+    });
+  };
+
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) addImageFromFile(file);
+    e.target.value = '';
   };
 
   const generateAIMessages = () => {
@@ -448,9 +570,19 @@ export default function DesignStudioPage() {
                   <p className="text-sm text-secondary-600 dark:text-secondary-400 mb-3">
                     Drag and drop an image or
                   </p>
-                  <button className="px-4 py-2 rounded-lg bg-primary-500 text-white text-sm font-medium hover:bg-primary-600 transition-colors">
+                  <input
+                    id="design-image-upload"
+                    type="file"
+                    accept="image/jpeg,image/png,image/svg+xml,image/webp"
+                    onChange={handleImageUpload}
+                    className="sr-only"
+                  />
+                  <label
+                    htmlFor="design-image-upload"
+                    className="inline-flex cursor-pointer items-center justify-center px-4 py-2 rounded-lg bg-primary-500 text-white text-sm font-medium hover:bg-primary-600 transition-colors"
+                  >
                     Browse Files
-                  </button>
+                  </label>
                 </div>
                 <p className="text-xs text-secondary-500 dark:text-secondary-400 text-center">
                   Supports JPG, PNG, SVG, WebP
@@ -513,11 +645,11 @@ export default function DesignStudioPage() {
               {elements.map((element) => (
                 <div
                   key={element.id}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setSelectedElement(element.id);
-                  }}
-                  className={`absolute cursor-move ${
+                  onPointerDown={(e) => handleElementPointerDown(e, element)}
+                  onPointerMove={handleElementPointerMove}
+                  onPointerUp={handleElementPointerUp}
+                  onPointerCancel={handleElementPointerUp}
+                  className={`absolute cursor-move touch-none select-none ${
                     selectedElement === element.id ? 'ring-2 ring-primary-500' : ''
                   }`}
                   style={{
@@ -555,10 +687,44 @@ export default function DesignStudioPage() {
                       }}
                     />
                   )}
+                  {element.type === 'image' && element.content && (
+                    <img
+                      src={element.content}
+                      alt="Uploaded design element"
+                      className="h-full w-full object-cover pointer-events-none"
+                      draggable={false}
+                    />
+                  )}
                   {element.type === 'sticker' && (
                     <span style={{ fontSize: (element.fontSize || 40) * zoom / 100 }}>
                       {element.content}
                     </span>
+                  )}
+
+                  {selectedElement === element.id && (
+                    <>
+                      {['nw', 'ne', 'sw', 'se', 'n', 's', 'e', 'w'].map(h => (
+                        <div
+                          key={h}
+                          onPointerDown={(e) => handleResizePointerDown(e, element, h)}
+                          onPointerMove={handleResizePointerMove}
+                          onPointerUp={handleResizePointerUp}
+                          onPointerCancel={handleResizePointerUp}
+                          className={`absolute bg-primary-500 border-2 border-white rounded-full touch-none z-10 ${
+                            h === 'nw' || h === 'se' ? 'w-3 h-3' : 'w-3 h-3'
+                          } ${
+                            h === 'nw' ? '-left-1.5 -top-1.5 cursor-nwse-resize' :
+                            h === 'ne' ? '-right-1.5 -top-1.5 cursor-nesw-resize' :
+                            h === 'sw' ? '-left-1.5 -bottom-1.5 cursor-nesw-resize' :
+                            h === 'se' ? '-right-1.5 -bottom-1.5 cursor-nwse-resize' :
+                            h === 'n' ? 'left-1/2 -translate-x-1/2 -top-1.5 cursor-ns-resize' :
+                            h === 's' ? 'left-1/2 -translate-x-1/2 -bottom-1.5 cursor-ns-resize' :
+                            h === 'e' ? '-right-1.5 top-1/2 -translate-y-1/2 cursor-ew-resize' :
+                            '-left-1.5 top-1/2 -translate-y-1/2 cursor-ew-resize'
+                          }`}
+                        />
+                      ))}
+                    </>
                   )}
                 </div>
               ))}

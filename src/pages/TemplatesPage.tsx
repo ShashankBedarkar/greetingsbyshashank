@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Search, Filter, Heart, ShoppingCart, Star, Check } from 'lucide-react';
+import { Search, Heart, ShoppingCart, Star, Check } from 'lucide-react';
 import Button from '../components/ui/Button';
 import { useCart } from '../contexts/CartContext';
 import { useWishlist } from '../contexts/WishlistContext';

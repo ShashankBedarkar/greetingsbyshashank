@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import { ArrowRight, Star, Truck, Gift, Shield, CreditCard, ChevronRight, Sparkles, Check } from 'lucide-react';
+import { ArrowRight, Star, Truck, Shield, ChevronRight, Sparkles, Check } from 'lucide-react';
 import ProductCard from '../components/ui/ProductCard';
 import Button from '../components/ui/Button';
 import { products } from '../data/products';
@@ -41,13 +41,6 @@ const testimonials = [
     rating: 5,
     image: 'https://images.pexels.com/photos/1181686/pexels-photo-1181686.jpeg?auto=compress&cs=tinysrgb&w=200',
   },
-];
-
-const trustBadges = [
-  { icon: Truck, title: 'Fast Shipping', description: 'Ships in 2-3 days' },
-  { icon: Star, title: '4.9 Rating', description: '2,300+ 5-star reviews' },
-  { icon: Shield, title: 'Premium Quality', description: '100% satisfaction guaranteed' },
-  { icon: CreditCard, title: 'Secure Checkout', description: 'SSL encrypted payments' },
 ];
 
 export default function HomePage() {
