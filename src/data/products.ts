@@ -19,7 +19,7 @@ export interface Product {
 export const products: Product[] = [
   {
     id: '1',
-    name: 'Wedding Anniversary Card!',
+    name: 'Wedding Anniversary Card',
     price: 12.99,
     compareAtPrice: 15.99,
     image: '/images/homepage/wedding-anniversary-card/Wedding_Anniversary_Card_Front_Cover.png',
@@ -57,8 +57,6 @@ export const products: Product[] = [
     description: 'Spread the magic, warmth, and joy of Christmas with a beautifully designed greeting card made to share heartfelt wishes with your loved ones. Featuring festive Christmas elements, sparkling lights, snow, a beautifully decorated Christmas tree, and a warm holiday atmosphere, this card captures the true spirit of the season.',
     features: [
       'Premium 350gsm card stock',
-      'Gold foil lettering',
-      'Matching envelope included',
       'Customizable message inside',
       'Size: 5" x 7"',
     ],
@@ -78,9 +76,7 @@ export const products: Product[] = [
     description: 'Make someone’s special day even more memorable with a beautiful birthday greeting card filled with warmth, love, and heartfelt wishes. Designed with colorful decorations, cheerful birthday elements, and a festive celebration theme, this card is the perfect way to share happiness with someone you care about.',
     features: [
       'Premium 300gsm card stock',
-      'Festive foil accents',
-      'Matching envelope included',
-      'Blank interior for personal message',
+      'Customizable message inside',
       'Size: 5" x 7"',
     ],
     inStock: true,
@@ -88,20 +84,18 @@ export const products: Product[] = [
   },
   {
     id: '4',
-    name: 'Thank You Floral Card',
-    price: 11.99,
-    image: 'https://images.pexels.com/photos/931007/pexels-photo-931007.jpeg?auto=compress&cs=tinysrgb&w=800',
+    name: 'Merry Christmas Card',
+    price: 5.99,
+    image: 'public/images/homepage/wedding-anniversary-card/Christmas Greeting Card.png',
     rating: 4.9,
     reviews: 156,
     isCustomizable: true,
     isFeatured: true,
-    category: 'thank-you',
-    description: 'Show your gratitude with our elegant floral thank you card. Featuring beautiful botanical illustrations and a heartfelt message space.',
+    category: 'christmas',
+    description: 'Send your wishes of love, happiness, peace, and prosperity to family, friends, and everyone who makes your life special. Whether you're celebrating together or sending wishes from far, this Christmas greeting card is a wonderful way to make someone’s holiday brighter.',
     features: [
       'Premium 350gsm card stock',
-      'Botanical illustration design',
-      'Matching envelope included',
-      'Blank interior for personal message',
+      'Customizable message inside'
       'Size: 5" x 7"',
     ],
     inStock: true,
