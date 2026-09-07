@@ -19,7 +19,7 @@ export interface Product {
 export const products: Product[] = [
   {
     id: '1',
-    name: 'Wedding Anniversary Card',
+    name: 'Wedding Anniversary Card!',
     price: 12.99,
     compareAtPrice: 15.99,
     image: '/images/homepage/wedding-anniversary-card/Wedding_Anniversary_Card_Front_Cover.png',
