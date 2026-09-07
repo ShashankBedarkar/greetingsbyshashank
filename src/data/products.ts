@@ -49,7 +49,7 @@ export const products: Product[] = [
     name: 'Merry Christmas Card',
     price: 18.99,
     image: '/images/homepage/wedding-anniversary-card/Christmas Greeting Card Front.png',
-    '/images/homepage/wedding-anniversary-card/Christmas Greeting Card Back.png
+    '/images/homepage/wedding-anniversary-card/Christmas Greeting Card Back.png',
     rating: 5.0,
     reviews: 189,
     isCustomizable: true,
