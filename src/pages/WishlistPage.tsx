@@ -3,10 +3,12 @@ import { Heart, ShoppingBag, Trash2, Loader2 } from 'lucide-react';
 import Button from '../components/ui/Button';
 import { useWishlist } from '../contexts/WishlistContext';
 import { useCart } from '../contexts/CartContext';
+import { useCurrency } from '../contexts/CurrencyContext';
 
 export default function WishlistPage() {
   const { wishlistItems, wishlistCount, loading, removeFromWishlist } = useWishlist();
   const { addToCart } = useCart();
+  const { convertPrice, getSymbol } = useCurrency();
 
   const handleAddToCart = async (product: { id: string; name: string; price: number; image: string }) => {
     await addToCart(product, 1);
@@ -84,7 +86,7 @@ export default function WishlistPage() {
 
                 <div className="flex items-center justify-between mb-4">
                   <span className="text-xl font-bold text-primary-600 dark:text-primary-400">
-                    ${item.price.toFixed(2)}
+                    {getSymbol()}{convertPrice(item.price).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                   </span>
                 </div>
 

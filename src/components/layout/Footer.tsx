@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { Gift, Mail, Phone, MapPin, Instagram, Twitter, Send } from 'lucide-react';
 import { useState } from 'react';
+import { useCurrency } from '../../contexts/CurrencyContext';
 
 const quickLinks = [
   { name: 'Home', href: '/' },
@@ -25,6 +26,7 @@ const socialLinks = [
 ];
 
 export default function Footer() {
+  const { convertPrice, getSymbol } = useCurrency();
   const [email, setEmail] = useState('');
   const [subscribed, setSubscribed] = useState(false);
 
@@ -150,7 +152,7 @@ export default function Footer() {
             <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />
             </svg>
-            <span className="text-sm">Free Shipping Over $50</span>
+            <span className="text-sm">Free Shipping Over {getSymbol()}{convertPrice(50).toLocaleString('en-IN', { maximumFractionDigits: 0 })}</span>
           </div>
           <div className="flex items-center gap-2 text-secondary-400">
             <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">

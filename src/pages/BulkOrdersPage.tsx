@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Package, FileText, Download, Send, CheckCircle, Users, Building2, Mail, Phone, HelpCircle } from 'lucide-react';
 import Button from '../components/ui/Button';
 import Input from '../components/ui/Input';
+import { useCurrency } from '../contexts/CurrencyContext';
 
 const bulkBenefits = [
   {
@@ -34,6 +35,7 @@ const pricingTiers = [
 ];
 
 export default function BulkOrdersPage() {
+  const { convertPrice, getSymbol } = useCurrency();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -77,7 +79,7 @@ export default function BulkOrdersPage() {
               </div>
               <div className="flex items-center gap-2 bg-white/20 rounded-lg px-4 py-2">
                 <CheckCircle className="w-5 h-5" />
-                <span>Free shipping over $100</span>
+                <span>Free shipping over {getSymbol()}{convertPrice(100).toLocaleString('en-IN', { maximumFractionDigits: 0 })}</span>
               </div>
               <div className="flex items-center gap-2 bg-white/20 rounded-lg px-4 py-2">
                 <CheckCircle className="w-5 h-5" />
@@ -206,11 +208,11 @@ export default function BulkOrdersPage() {
                       required
                     >
                       <option value="">Select budget</option>
-                      <option value="under-500">Under $500</option>
-                      <option value="500-1000">$500 - $1,000</option>
-                      <option value="1000-2500">$1,000 - $2,500</option>
-                      <option value="2500-5000">$2,500 - $5,000</option>
-                      <option value="5000+">$5,000+</option>
+                      <option value="under-500">Under {getSymbol()}{convertPrice(500).toLocaleString('en-IN', { maximumFractionDigits: 0 })}</option>
+                      <option value="500-1000">{getSymbol()}{convertPrice(500).toLocaleString('en-IN', { maximumFractionDigits: 0 })} - {getSymbol()}{convertPrice(1000).toLocaleString('en-IN', { maximumFractionDigits: 0 })}</option>
+                      <option value="1000-2500">{getSymbol()}{convertPrice(1000).toLocaleString('en-IN', { maximumFractionDigits: 0 })} - {getSymbol()}{convertPrice(2500).toLocaleString('en-IN', { maximumFractionDigits: 0 })}</option>
+                      <option value="2500-5000">{getSymbol()}{convertPrice(2500).toLocaleString('en-IN', { maximumFractionDigits: 0 })} - {getSymbol()}{convertPrice(5000).toLocaleString('en-IN', { maximumFractionDigits: 0 })}</option>
+                      <option value="5000+">{getSymbol()}{convertPrice(5000).toLocaleString('en-IN', { maximumFractionDigits: 0 })}+</option>
                     </select>
                   </div>
                 </div>

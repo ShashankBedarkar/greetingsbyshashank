@@ -3,6 +3,7 @@ import { Filter, Grid, List, SlidersHorizontal, X } from 'lucide-react';
 import ProductCard from '../components/ui/ProductCard';
 import Button from '../components/ui/Button';
 import { products as allProducts } from '../data/products';
+import { useCurrency } from '../contexts/CurrencyContext';
 
 const categories = [
   { id: 'all', name: 'All Cards', count: 8 },
@@ -17,10 +18,10 @@ const categories = [
 ];
 
 const priceRanges = [
-  { id: 'under-10', label: 'Under $10', min: 0, max: 10 },
-  { id: '10-15', label: '$10 - $15', min: 10, max: 15 },
-  { id: '15-20', label: '$15 - $20', min: 15, max: 20 },
-  { id: 'over-20', label: 'Over $20', min: 20, max: 1000 },
+  { id: 'under-10', min: 0, max: 10 },
+  { id: '10-15', min: 10, max: 15 },
+  { id: '15-20', min: 15, max: 20 },
+  { id: 'over-20', min: 20, max: 1000 },
 ];
 
 const sortOptions = [
@@ -32,6 +33,13 @@ const sortOptions = [
 ];
 
 export default function ShopPage() {
+  const { convertPrice, getSymbol } = useCurrency();
+  const formatRange = (r: typeof priceRanges[0]) => {
+    const sym = getSymbol();
+    if (r.id === 'under-10') return `Under ${sym}${convertPrice(10).toLocaleString('en-IN', { maximumFractionDigits: 0 })}`;
+    if (r.id === 'over-20') return `Over ${sym}${convertPrice(20).toLocaleString('en-IN', { maximumFractionDigits: 0 })}`;
+    return `${sym}${convertPrice(r.min).toLocaleString('en-IN', { maximumFractionDigits: 0 })} - ${sym}${convertPrice(r.max).toLocaleString('en-IN', { maximumFractionDigits: 0 })}`;
+  };
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [selectedPriceRange, setSelectedPriceRange] = useState<string | null>(null);
@@ -182,7 +190,7 @@ export default function ShopPage() {
                           : 'text-secondary-600 dark:text-secondary-400 hover:bg-secondary-100 dark:hover:bg-secondary-800'
                       }`}
                     >
-                      {range.label}
+                      {formatRange(range)}
                     </button>
                   </li>
                 ))}
@@ -250,7 +258,7 @@ export default function ShopPage() {
                                 : 'text-secondary-600 dark:text-secondary-400'
                             }`}
                           >
-                            {range.label}
+                            {formatRange(range)}
                           </button>
                         </li>
                       ))}

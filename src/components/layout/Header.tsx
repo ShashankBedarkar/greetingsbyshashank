@@ -78,7 +78,7 @@ export default function Header() {
   const { user, signOut } = useAuth();
   const { cartCount } = useCart();
   const { wishlistCount } = useWishlist();
-  const { currency, setCurrency, getSymbol } = useCurrency();
+  const { currency, setCurrency, getSymbol, convertPrice } = useCurrency();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -184,7 +184,7 @@ export default function Header() {
                           </Link>
                           <div className="flex items-center gap-4 text-sm text-secondary-500 dark:text-secondary-400">
                             <span className="flex items-center gap-1">
-                              <Truck className="w-4 h-4" /> Free shipping over $50
+                              <Truck className="w-4 h-4" /> Free shipping over {getSymbol()}{convertPrice(50).toLocaleString('en-IN', { maximumFractionDigits: 0 })}
                             </span>
                             <span className="flex items-center gap-1">
                               <Gift className="w-4 h-4" /> Gift wrapping available

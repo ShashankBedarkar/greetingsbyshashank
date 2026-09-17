@@ -4,6 +4,7 @@ import { Search, Heart, ShoppingCart, Star, Check } from 'lucide-react';
 import Button from '../components/ui/Button';
 import { useCart } from '../contexts/CartContext';
 import { useWishlist } from '../contexts/WishlistContext';
+import { useCurrency } from '../contexts/CurrencyContext';
 
 const templateCategories = [
   'All',
@@ -146,6 +147,7 @@ export default function TemplatesPage() {
   const [showPremium, setShowPremium] = useState(false);
   const { addToCart, cartItems } = useCart();
   const { isInWishlist, toggleWishlist } = useWishlist();
+  const { convertPrice, getSymbol } = useCurrency();
 
   const filteredTemplates = templates.filter((template) => {
     if (selectedCategory !== 'All' && template.category !== selectedCategory) return false;
@@ -298,7 +300,7 @@ export default function TemplatesPage() {
 
                   <div className="flex items-center justify-between">
                     <span className="text-xl font-bold text-primary-600 dark:text-primary-400">
-                      ${template.price.toFixed(2)}
+                      {getSymbol()}{convertPrice(template.price).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                     </span>
                     <Link to={`/custom-studio?template=${template.id}`}>
                       <Button size="sm" variant="outline">

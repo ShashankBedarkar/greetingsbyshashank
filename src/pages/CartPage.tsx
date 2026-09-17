@@ -149,7 +149,7 @@ export default function CartPage() {
                       }`}
                     >
                       <Gift className="w-4 h-4" />
-                      {item.gift_wrapping ? 'Gift Wrapping Added (+$2.99)' : 'Add Gift Wrapping'}
+                      {item.gift_wrapping ? `Gift Wrapping Added (+${getSymbol()}${convertPrice(2.99).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })})` : 'Add Gift Wrapping'}
                     </button>
                   </div>
                 </div>

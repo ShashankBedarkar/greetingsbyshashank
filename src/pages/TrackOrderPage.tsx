@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Search, Package, Truck, CheckCircle, Clock, XCircle, MapPin, Calendar, ArrowRight } from 'lucide-react';
 import Button from '../components/ui/Button';
+import { useCurrency } from '../contexts/CurrencyContext';
 
 interface OrderStatus {
   status: 'processing' | 'shipped' | 'delivered' | 'cancelled';
@@ -95,6 +96,7 @@ export default function TrackOrderPage() {
   const [order, setOrder] = useState<Order | null>(null);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const { convertPrice, getSymbol } = useCurrency();
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -256,12 +258,12 @@ export default function TrackOrderPage() {
                         <p className="font-medium text-secondary-900 dark:text-secondary-100">{item.name}</p>
                         <p className="text-sm text-secondary-500">Qty: {item.quantity}</p>
                       </div>
-                      <p className="font-semibold text-primary-600 dark:text-primary-400">${item.price.toFixed(2)}</p>
+                      <p className="font-semibold text-primary-600 dark:text-primary-400">{getSymbol()}{convertPrice(item.price).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
                     </div>
                   ))}
                   <div className="flex justify-between items-center pt-3 font-bold">
                     <span className="text-secondary-900 dark:text-secondary-100">Total</span>
-                    <span className="text-primary-600 dark:text-primary-400">${order.total.toFixed(2)}</span>
+                    <span className="text-primary-600 dark:text-primary-400">{getSymbol()}{convertPrice(order.total).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
                   </div>
                 </div>
               </div>
